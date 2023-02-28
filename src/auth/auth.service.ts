@@ -13,6 +13,12 @@ export class AuthService {
         @InjectRepository(User) private userRepo: Repository<User>,
     ) {}
 
+    async me(req: any) {
+        const decoded = req.headers;
+        console.log(req.headers);
+        throw new HttpException('Nope', HttpStatus.BAD_REQUEST);
+    }
+
     allUsers() {
         return this.userRepo.find({ select: ['id', 'username', 'firstName', 'lastName'] });
     }

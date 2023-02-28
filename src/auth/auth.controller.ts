@@ -25,4 +25,9 @@ export class AuthController {
     users() {
         return this.auth.allUsers();
     }
+
+    @Get('me')
+    me(@Request() req) {
+        return this.auth.me(req);
+    }
 }
