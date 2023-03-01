@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Request, UseGuards } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { LocalAuthGuard } from './local-auth.guard';
 import { AuthService } from './auth.service';
@@ -28,6 +28,10 @@ export class AuthController {
 
     @Get('me')
     me(@Request() req) {
-        return this.auth.me(req);
+        try {
+            return this.auth.me(req);
+        } catch (e) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
     }
 }

@@ -10,8 +10,8 @@ export class SessionController {
   constructor(private readonly sessionService: SessionService) {}
 
   @Post()
-  create(@Body() createSessionDto: CreateSessionDto) {
-    return this.sessionService.create(createSessionDto);
+  create(@Request() req: any, @Body() createSessionDto: CreateSessionDto) {
+    return this.sessionService.create(req, createSessionDto);
   }
 
   @Get()

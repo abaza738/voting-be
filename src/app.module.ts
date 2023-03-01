@@ -6,7 +6,7 @@ import { VoteModule } from './vote/vote.module';
 import { TopicModule } from './topic/topic.module';
 import { SessionModule } from './session/session.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { config } from './database/database.providers';
+import { config } from '../orm.config';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 

@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
+import { Users } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -10,7 +10,7 @@ import * as bcrypt from 'bcrypt';
 export class AuthService {
     constructor(
         private jwtService: JwtService,
-        @InjectRepository(User) private userRepo: Repository<User>,
+        @InjectRepository(Users) private userRepo: Repository<Users>,
     ) {}
 
     async me(req: any) {
@@ -34,12 +34,20 @@ export class AuthService {
         return this.userRepo.find({ select: ['id', 'username', 'firstName', 'lastName'] });
     }
 
-    async findByUsername(username: string): Promise<User> {
-        return this.userRepo.findOneByOrFail({ username });
+    async findByUsername(username: string): Promise<Users> {
+        try {
+            return await this.userRepo.findOneByOrFail({ username });
+        } catch (e) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
     }
 
     async findById(id: number) {
-        return this.userRepo.findOneByOrFail({ id });
+        try {
+            return await this.userRepo.findOneByOrFail({ id });
+        } catch (e) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
     }
 
     async authenticate(username: string, userPassword: string) {
@@ -61,7 +69,7 @@ export class AuthService {
         throw new HttpException("Wrong username or password", HttpStatus.BAD_REQUEST);
     }
 
-    async login(user: User) {
+    async login(user: Users) {
         const payload = {
             sub: user.id
         };

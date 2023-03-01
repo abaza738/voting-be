@@ -2,28 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Session } from './entities/session.entity';
+import { Sessions } from './entities/session.entity';
 import { In, Repository } from 'typeorm';
-import { Topic } from 'src/topic/entities/topic.entity';
-import { Vote } from 'src/vote/entities/vote.entity';
+import { Topics } from 'src/topic/entities/topic.entity';
+import { Votes } from 'src/vote/entities/vote.entity';
 
 @Injectable()
 export class SessionService {
   constructor(
-    @InjectRepository(Session) private sessionRepo: Repository<Session>,
-    @InjectRepository(Vote) private voteRepo: Repository<Vote>,
+    @InjectRepository(Sessions) private sessionRepo: Repository<Sessions>,
+    @InjectRepository(Votes) private voteRepo: Repository<Votes>,
   ) {}
 
-  create(createSessionDto: CreateSessionDto) {
-    return 'This action adds a new session';
+  async create(req: any, createSessionDto: CreateSessionDto) {
+    const newSession = this.sessionRepo.create({ ...createSessionDto, user: req.user });
+    return this.sessionRepo.save(newSession);
   }
 
   async findAll(req: any) {
-    console.log(req.user);
-    const mySessions = await this.sessionRepo.find({ where: { user: req.user }});
-    const votes = await this.voteRepo.find({ where: {  user: req.user }});
-    const otherSessions = await this.sessionRepo.find({ where: { topics: [...votes.map(v => v.topic)] }})
-    return [...mySessions, ...otherSessions];
+    return this.sessionRepo.find({ where: { user: req.user.id }, order: { updatedAt: 'DESC' } });
   }
 
   findOne(name: string) {
