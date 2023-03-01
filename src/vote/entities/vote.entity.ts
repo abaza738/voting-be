@@ -6,7 +6,7 @@ export class Vote {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => Topic, (topic) => topic.votes)
+    @ManyToOne(() => Topic, (topic) => topic.id)
     topic: Topic;
 
     @Column({ type: 'varchar' })

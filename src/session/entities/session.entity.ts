@@ -1,5 +1,6 @@
+import { User } from "src/auth/entities/user.entity";
 import { Topic } from "src/topic/entities/topic.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Session {
@@ -9,6 +10,9 @@ export class Session {
     @Column({ type: 'varchar', unique: true })
     name: string;
 
-    @OneToMany(() => Topic, (topic) => topic.name)
+    @ManyToOne(() => User, (user) => user.id)
+    user: User;
+
+    @OneToMany(() => Topic, (topic) => topic.id)
     topics: Topic[];
 }

@@ -10,9 +10,9 @@ export class Topic {
     @Column({ type: 'varchar' })
     name: string;
 
-    @OneToMany(() => Vote, (vote) => vote.user)
+    @OneToMany(() => Vote, (vote) => vote.id)
     votes: Vote[];
 
-    @ManyToOne(() => Session, (session) => session.name)
+    @ManyToOne(() => Session, (session) => session.id)
     session: Session;
 }
