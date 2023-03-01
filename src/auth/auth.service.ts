@@ -14,9 +14,20 @@ export class AuthService {
     ) {}
 
     async me(req: any) {
-        const decoded = req.headers;
-        console.log(req.headers);
-        throw new HttpException('Nope', HttpStatus.BAD_REQUEST);
+        const authorization = req.headers.authorization;
+        if (!authorization) {
+            throw new HttpException('Nope', HttpStatus.BAD_REQUEST);
+        }
+        const token = authorization.split(' ')[1];
+        const verified = this.jwtService.verify(token);
+        if (!verified) {
+            throw new HttpException('Nope', HttpStatus.BAD_REQUEST);
+        }
+        const id = +verified['sub'];
+        if (!id || isNaN(id)) {
+            throw new HttpException('Nope', HttpStatus.BAD_REQUEST);
+        }
+        return this.findById(id);
     }
 
     allUsers() {
